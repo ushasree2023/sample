@@ -1,21 +1,18 @@
-package utils;
+package utilities;
 
-import java.io.IOException;
 import java.time.Duration;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseClass extends TestData {
@@ -25,13 +22,12 @@ public class BaseClass extends TestData {
 
 	@Parameters("browser")
 	@BeforeTest
-	public void setup(@Optional("chrome") String br) throws Exception {
+	public void setup(String br) {
 
 		logger = Logger.getLogger("Ninja Website");
 		PropertyConfigurator.configure("log4j.properties");
 
 		if (br.equals("chrome")) {
-
 			ChromeOptions options = new ChromeOptions();
 			options.addArguments("--incognito");
 			// options.addArguments("--headless");
@@ -41,31 +37,28 @@ public class BaseClass extends TestData {
 
 		} else if (br.equals("firefox")) {
 			FirefoxOptions options = new FirefoxOptions();
-
 			WebDriverManager.firefoxdriver().setup();
 			driver = new FirefoxDriver(options);
+		}
 
-		} else if (br.equals("edge")) {
-			EdgeOptions options = new EdgeOptions();
-
-			WebDriverManager.edgedriver().setup();
-			driver = new EdgeDriver(options);
+		else if (br.equals("edge")) {
 
 		}
+
 		driver.manage().window().maximize();
+
 		driver.get(URL);
-
 		driver.manage().deleteAllCookies();
-		driver.manage().timeouts().pageLoadTimeout(Duration.ofMinutes(6));
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofMinutes(2));
 
-		logger.info("Page Title :- " + driver.getTitle());
-		MyScreenRecording.startRecording("Ninja_Register");
+		logger.info("Page Title: " + driver.getTitle());
 
 	}
 
 	@AfterTest
 	public void tearDown() throws Exception {
+
 		MyScreenRecording.stopRecording();
 		driver.quit();
 	}

@@ -1,4 +1,4 @@
-package utils;
+package utilities;
 
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
